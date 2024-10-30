@@ -10,6 +10,6 @@ Todo: install packages
 
 Run the example script:
 
-'''sh
+```sh
 python app/my_script.py
-'''
+```
