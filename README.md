@@ -53,3 +53,8 @@ Run the email sender:
 ```sh
 python app/email_service.py
 ```
+
+Run the rps game:
+```sh
+python app/rps.py
+```
