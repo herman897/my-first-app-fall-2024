@@ -1,61 +1,71 @@
+# this is the app/stocks.py file...
+
 # LOCAL DEV (ENV VARS)
 
 import os
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 
-#load_dotenv()
+load_dotenv() # looks in the ".env" file for env vars
 
 API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", default="demo")
+print(API_KEY)
 
-import requests
-import json
-from pprint import pprint
+# SELECT A SYMBOL
 
-request_url = f"https://www.alphavantage.co/query?function=UNEMPLOYMENT&apikey={API_KEY}"
+symbol = input("Please input a symbol (e.g. 'NFLX'): ") or "NFLX"
+print("SYMBOL:", symbol)
 
-response = requests.get(request_url)
+# FETCH THE DATA
 
-parsed_response = json.loads(response.text)
-print(type(parsed_response))
-pprint(parsed_response)
+from pandas import read_csv
 
-data = parsed_response["data"]
+request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={symbol}&apikey={API_KEY}&outputsize=full&datatype=csv"
+
+df = read_csv(request_url)
+
+print(df.columns)
+print(len(df))
+print(df.head())
+
 
 # Challenge A
 #
-# What is the most recent unemployment rate? And the corresponding date?
-# Display the unemployment rate using a percent sign.
+# What is the most recent adjusted closing price? And the corresponding date?
+# Display the price formatted as USD, with dollar sign and two decimal places.
 
 print("-------------------------")
-print("LATEST UNEMPLOYMENT RATE:")
-#print(data[0])
-print(f"{data[0]['value']}%", "as of", data[0]["date"])
+print("LATEST CLOSING PRICE:")
+first_row = df.iloc[0]
+#print(first_row)
+print(f"${first_row['adjusted_close']}", "as of", first_row["timestamp"])
 
 
 # Challenge B
 #
-# What is the average unemployment rate for all months during this calendar year?
-# ... How many months does this cover?
+# What is the average, median, min, and max adjusted closing price
+# (over the latest 100 available days only)?
 
-from statistics import mean
-
-this_year = [d for d in data if "2022-" in d["date"]]
-
-rates_this_year = [float(d["value"]) for d in this_year]
-#print(rates_this_year)
+recent_df = df.iloc[0:100] # use slicing or df.head(100)
+print(len(recent_df))
 
 print("-------------------------")
-print("AVG UNEMPLOYMENT THIS YEAR:", f"{mean(rates_this_year)}%")
-print("NO MONTHS:", len(this_year))
+print("RECENT STATS...")
+print(f"MEAN PRICE: ${recent_df['adjusted_close'].mean()}")
+print(f"MEDIAN PRICE: ${recent_df['adjusted_close'].median()}")
+print(f"MIN PRICE: ${recent_df['adjusted_close'].min()}")
+print(f"MAX PRICE: ${recent_df['adjusted_close'].max()}")
+# quantiles, for fun :-)
+print(f"75TH PERCENTILE: ${recent_df['adjusted_close'].quantile(.75).round(2)}")
+print(f"25TH PERCENTILE: ${recent_df['adjusted_close'].quantile(.25).round(2)}")
+
 
 # Challenge C
 #
-# Plot a line chart of unemployment rates over time.
+# Plot a line chart of adjusted closing prices over time (all time).
 
 from plotly.express import line
 
-dates = [d["date"] for d in data]
-rates = [float(d["value"]) for d in data]
-
-fig = line(x=dates, y=rates, title="United States Unemployment Rate over time", labels= {"x": "Month", "y": "Unemployment Rate"})
+fig = line(x=df["timestamp"], y=df["adjusted_close"],
+            title=f"Stock Prices ({symbol})",
+           labels= {"x": "Date", "y": "Stock Price ($)"})
 fig.show()
