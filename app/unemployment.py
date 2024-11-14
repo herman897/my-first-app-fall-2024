@@ -7,6 +7,7 @@ from statistics import mean
 import requests
 from plotly.express import line
 
+
 from app.alpha_service import API_KEY
 
 
