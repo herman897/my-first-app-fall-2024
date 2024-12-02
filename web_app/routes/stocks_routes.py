@@ -12,6 +12,7 @@ def stocks_form():
     print("STOCKS FORM...")
     return render_template("stocks_form.html")
 
+#@stocks_routes.route("/stocks/dashboard", methods=["POST"])
 @stocks_routes.route("/stocks/dashboard", methods=["GET", "POST"])
 def stocks_dashboard():
     print("STOCKS DASHBOARD...")
@@ -22,16 +23,18 @@ def stocks_dashboard():
         print("FORM DATA:", request_data)
     else:
         # for data sent via GET request, url params are in request.args
-        request_data = dict(request.args)
+        request_data = dict(request.args) # /stocks/dashboard?symbol=GOOGL
         print("URL PARAMS:", request_data)
 
+    # grabbing some data from the dictionary sent by the form (or url params)
+    #risk_level = request_data.get("risk_level")
     symbol = request_data.get("symbol") or "NFLX"
 
     try:
         df = fetch_stocks_csv(symbol=symbol)
         latest_close_usd = format_usd(df.iloc[0]["adjusted_close"])
         latest_date = df.iloc[0]["timestamp"]
-        data = df.to_dict("records")
+        data = df.to_dict("records") # list of dictionaries!!
 
         flash("Fetched Real-time Market Data!", "success")
         return render_template("stocks_dashboard.html",
