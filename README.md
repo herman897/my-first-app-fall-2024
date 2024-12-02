@@ -39,13 +39,17 @@ python app/my_script.py
 Run the unemployment report:
 
 ```sh
-python app/unemployment.py
+#python app/unemployment.py
+
+python -m app.unemployment
 ```
 
 Run the stocks report:
 
 ```sh
-python app/stocks.py
+#python app/stocks.py
+
+python -m app.stocks
 ```
 
 Run the email sender:
@@ -58,3 +62,25 @@ Run the rps game:
 ```sh
 python app/rps.py
 ```
+
+### Web app
+
+```sh
+# Mac OS:
+FLASK_APP=web_app flask run
+
+# Windows OS:
+# ... if `export` doesn't work for you, try `set` instead
+# ... or set FLASK_APP variable via ".env" file
+export FLASK_APP=web_app
+flask run
+```
+
+## Testing
+
+Run tests:
+
+```sh
+pytest
+```
+
