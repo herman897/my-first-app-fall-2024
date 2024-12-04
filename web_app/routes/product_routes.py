@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, render_template
 
-home_routes = Blueprint("home_routes", __name__)
+product_routes = Blueprint("product_routes", __name__)
 
 
 @product_routes.route("/products")
@@ -28,8 +28,7 @@ def products_list():
             'description': 'It has all the answers.',
             'price': 129.99,
             'url': 'https://picsum.photos/id/24/360/200'
-        }
-    ]
+        }]
 
 
-    return render_template("products.html", prodcuts=products)
+    return render_template("products.html", products=products)

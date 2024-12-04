@@ -1,4 +1,5 @@
 {% extends "bootstrap_5_layout.html" %}
+{% set page_title = "Products Page" %}
 {% set active_page = "products" %}
 
 {% block content %}
@@ -6,6 +7,12 @@
     <h1>Products</h1>
 
     <p class="lead">This is the products page</p>
+
+    <ul> 
+    {% for product in products %}   
+        <li>{{ product.name }} </li>
+    {% endfor %}
+    </ul>
 
     {% if products|length > 0 %}
 
@@ -19,8 +26,7 @@
                             <h5 class="card-title">{{ product.name }}</h5>
                             <p class="card-text">{{ product.description }}</p>
 
-
-
+                            <!--button class="btn btn-primary">Order now!</button-->
 
                         </div>
                     </div>
@@ -33,7 +39,6 @@
 
         <p>Oops, no products found.</p>
 
-    {% endif %}   
-
+    {% endif %}
 
 {% endblock %}
